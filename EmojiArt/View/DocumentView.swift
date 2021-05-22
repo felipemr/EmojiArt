@@ -25,13 +25,7 @@ struct DocumentView: View {
             
             GeometryReader{ geometry in
                 ZStack{
-                    Color.gray.overlay(bgImage)
-                        .edgesIgnoringSafeArea([.horizontal,.bottom])
-                        .onDrop(of: ["public.image","public.text"], isTargeted: nil, perform: { providers, location in
-                            var fixedLocation = geometry.convert(location, from: .global)
-                        fixedLocation = CGPoint(x: fixedLocation.x - geometry.size.width/2, y: fixedLocation.y - geometry.size.height/2)
-                            return self.drop(providers: providers, at: fixedLocation)
-                        })
+                    Color.gray.overlay(OptionalImage(uiImage: document.backgroundImage))
                     
                     ForEach(document.emojis){ emoji in
                         Text(emoji.text)
@@ -39,6 +33,13 @@ struct DocumentView: View {
                             .position(position(for: emoji, in: geometry.size))
                     }
                 }
+                .clipped()
+                .edgesIgnoringSafeArea([.horizontal,.bottom])
+                .onDrop(of: ["public.image","public.text"], isTargeted: nil, perform: { providers, location in
+                    var fixedLocation = geometry.convert(location, from: .global)
+                fixedLocation = CGPoint(x: fixedLocation.x - geometry.size.width/2, y: fixedLocation.y - geometry.size.height/2)
+                    return self.drop(providers: providers, at: fixedLocation)
+                })
                 
             }
             
@@ -49,13 +50,7 @@ struct DocumentView: View {
     
     private let emojiFontSize: CGFloat = 45
     
-    var bgImage : some View {
-        Group{
-            if document.backgroundImage != nil {
-                Image(uiImage: document.backgroundImage!)
-            }
-        }
-    }
+    
     
     private func drop(providers: [NSItemProvider], at location : CGPoint)->Bool{
         var found = providers.loadFirstObject(ofType: URL.self) { url in
