@@ -29,6 +29,7 @@ struct DocumentView: View {
                         OptionalImage(uiImage: document.backgroundImage).scaleEffect(zoomScale)
                     )
                         .gesture(doubleTapToZoom(in: geometry.size))
+                        .gesture(zoomGesture())
                         
                     
                     
@@ -53,7 +54,13 @@ struct DocumentView: View {
         
         
     }
-    @State private var zoomScale: CGFloat = 1.0
+    @State private var steadyZoomScale: CGFloat = 1.0
+    @GestureState private var gestureZoomScale : CGFloat = 1.0
+    
+    private var zoomScale: CGFloat{
+        steadyZoomScale * gestureZoomScale
+    }
+    
     private let emojiFontSize: CGFloat = 45
     
     private func drop(providers: [NSItemProvider], at location : CGPoint)->Bool{
@@ -81,7 +88,7 @@ struct DocumentView: View {
         if let image = image, image.size.width > 0, image.size.height>0{
             let hZoom = size.width / image.size.width
             let vZoom = size.height / image.size.height
-            zoomScale = min(hZoom, vZoom)
+            steadyZoomScale = min(hZoom, vZoom)
         }
     }
     
@@ -91,6 +98,18 @@ struct DocumentView: View {
                 withAnimation {
                     zoomToFit(document.backgroundImage, in: size)
                 }
+            }
+    }
+    
+    private func zoomGesture() -> some Gesture{
+        MagnificationGesture()
+            .updating($gestureZoomScale, body: { latestGestureScale, ourGestureStateInOut, transaction in
+                print(gestureZoomScale)
+                ourGestureStateInOut = latestGestureScale
+            })
+            .onEnded { finalGestureScale in
+                print(gestureZoomScale)
+                steadyZoomScale *= finalGestureScale
             }
     }
 }
