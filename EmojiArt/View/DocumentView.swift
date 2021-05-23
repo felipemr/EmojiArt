@@ -27,9 +27,9 @@ struct DocumentView: View {
                 ZStack{
                     Color.gray.overlay(
                         OptionalImage(uiImage: document.backgroundImage).scaleEffect(zoomScale)
+                            .gesture(doubleTapToZoom(in: geometry.size))
+                            .offset(panOffset)
                     )
-                        .gesture(doubleTapToZoom(in: geometry.size))
-                        .gesture(zoomGesture())
                         
                     
                     
@@ -40,10 +40,13 @@ struct DocumentView: View {
                     }
                 }
                 .clipped()
+                .gesture(panGesture())
+                .gesture(zoomGesture())
                 .edgesIgnoringSafeArea([.horizontal,.bottom])
                 .onDrop(of: ["public.image","public.text"], isTargeted: nil, perform: { providers, location in
                     var fixedLocation = geometry.convert(location, from: .global)
                 fixedLocation = CGPoint(x: fixedLocation.x - geometry.size.width/2, y: fixedLocation.y - geometry.size.height/2)
+                    fixedLocation = CGPoint(x: fixedLocation.x - panOffset.width, y: fixedLocation.y - panOffset.height)
                     fixedLocation = CGPoint(x: fixedLocation.x/zoomScale, y: fixedLocation.y/zoomScale)
                     return self.drop(providers: providers, at: fixedLocation)
                 })
@@ -81,6 +84,7 @@ struct DocumentView: View {
         var location = emoji.location
         location = CGPoint(x: location.x * zoomScale, y: location.y * zoomScale)
         location = CGPoint(x: location.x + size.width/2, y: location.y + size.height/2 )
+        location = CGPoint(x: location.x + panOffset.width , y: location.y + panOffset.height)
         return location
     }
     
@@ -88,6 +92,7 @@ struct DocumentView: View {
         if let image = image, image.size.width > 0, image.size.height>0{
             let hZoom = size.width / image.size.width
             let vZoom = size.height / image.size.height
+            steadyStatePanOffset = .zero
             steadyZoomScale = min(hZoom, vZoom)
         }
     }
@@ -104,12 +109,30 @@ struct DocumentView: View {
     private func zoomGesture() -> some Gesture{
         MagnificationGesture()
             .updating($gestureZoomScale, body: { latestGestureScale, ourGestureStateInOut, transaction in
-                print(gestureZoomScale)
+                print("updating :  \(gestureZoomScale)")
                 ourGestureStateInOut = latestGestureScale
             })
             .onEnded { finalGestureScale in
-                print(gestureZoomScale)
+                print("end : \(gestureZoomScale)")
                 steadyZoomScale *= finalGestureScale
+            }
+    }
+    
+    
+    @State private var steadyStatePanOffset: CGSize = .zero
+    @GestureState private var gestureStatePanOffset: CGSize = .zero
+    
+    private var panOffset: CGSize{
+        (steadyStatePanOffset + gestureStatePanOffset) * zoomScale
+    }
+    
+    private func panGesture() -> some Gesture{
+        DragGesture()
+            .updating($gestureStatePanOffset) { latesteDragGestureValue, ourGestureStateInOut, transaction in
+                ourGestureStateInOut = latesteDragGestureValue.translation / zoomScale
+            }
+            .onEnded { finalDragValue in
+                steadyStatePanOffset = steadyStatePanOffset + (finalDragValue.translation / zoomScale)
             }
     }
 }
