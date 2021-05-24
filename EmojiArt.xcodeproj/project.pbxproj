@@ -16,6 +16,7 @@
 		DED81AA32657088500708D32 /* EmojiArtExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED81AA22657088400708D32 /* EmojiArtExtensions.swift */; };
 		DED81AA52659A5DB00708D32 /* OptionalImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED81AA42659A5DB00708D32 /* OptionalImage.swift */; };
 		DED81AA72659BEF100708D32 /* AnimatableSystemFontModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED81AA62659BEF100708D32 /* AnimatableSystemFontModifier.swift */; };
+		DED81AA9265C270800708D32 /* Spinning.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED81AA8265C270800708D32 /* Spinning.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		DED81AA22657088400708D32 /* EmojiArtExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiArtExtensions.swift; sourceTree = "<group>"; };
 		DED81AA42659A5DB00708D32 /* OptionalImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalImage.swift; sourceTree = "<group>"; };
 		DED81AA62659BEF100708D32 /* AnimatableSystemFontModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatableSystemFontModifier.swift; sourceTree = "<group>"; };
+		DED81AA8265C270800708D32 /* Spinning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spinning.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 			children = (
 				DED81AA62659BEF100708D32 /* AnimatableSystemFontModifier.swift */,
 				DED81A8E2653590400708D32 /* DocumentView.swift */,
+				DED81AA8265C270800708D32 /* Spinning.swift */,
 				DED81AA42659A5DB00708D32 /* OptionalImage.swift */,
 			);
 			path = View;
@@ -184,6 +187,7 @@
 				DED81AA52659A5DB00708D32 /* OptionalImage.swift in Sources */,
 				DED81A9F26535B1100708D32 /* EmojiArtDocument.swift in Sources */,
 				DED81A8D2653590400708D32 /* EmojiArtApp.swift in Sources */,
+				DED81AA9265C270800708D32 /* Spinning.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

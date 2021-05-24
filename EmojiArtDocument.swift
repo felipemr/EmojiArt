@@ -44,9 +44,14 @@ class EmojiArtDocument: ObservableObject {
         }
     }
     
-    func setBackgroundURL(_ url: URL?){
-        emojiArt.backgroundURL = url?.imageURL
-        fetchBackgroundImageDate()
+    var backgroundURL: URL?{
+        get{
+            emojiArt.backgroundURL
+        }
+        set{
+            emojiArt.backgroundURL = newValue?.imageURL
+            fetchBackgroundImageDate()
+        }
     }
     
     private func fetchBackgroundImageDate(){

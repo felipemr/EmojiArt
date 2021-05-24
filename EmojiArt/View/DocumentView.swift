@@ -32,12 +32,17 @@ struct DocumentView: View {
                     )
                         
                     
-                    
-                    ForEach(document.emojis){ emoji in
-                        Text(emoji.text)
-                            .font(animatableWithSize: emoji.fontSize * zoomScale)
-                            .position(position(for: emoji, in: geometry.size))
+                    if isLoading{
+                        Image(systemName: "clock.arrow.2.circlepath").imageScale(.large).spinning()
                     }
+                    else{
+                        ForEach(document.emojis){ emoji in
+                            Text(emoji.text)
+                                .font(animatableWithSize: emoji.fontSize * zoomScale)
+                                .position(position(for: emoji, in: geometry.size))
+                        }
+                    }
+                    
                 }
                 .clipped()
                 .gesture(panGesture())
@@ -57,6 +62,11 @@ struct DocumentView: View {
         
         
     }
+    
+    var isLoading : Bool{
+        document.backgroundURL != nil && document.backgroundImage == nil
+    }
+    
     @State private var steadyZoomScale: CGFloat = 1.0
     @GestureState private var gestureZoomScale : CGFloat = 1.0
     
@@ -68,7 +78,7 @@ struct DocumentView: View {
     
     private func drop(providers: [NSItemProvider], at location : CGPoint)->Bool{
         var found = providers.loadFirstObject(ofType: URL.self) { url in
-            self.document.setBackgroundURL(url)
+            self.document.backgroundURL = url
         }
         if !found {
             found = providers.loadObjects(ofType: String.self, using: { string in
