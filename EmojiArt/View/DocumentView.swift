@@ -48,6 +48,9 @@ struct DocumentView: View {
                 .gesture(panGesture())
                 .gesture(zoomGesture())
                 .edgesIgnoringSafeArea([.horizontal,.bottom])
+                .onReceive(document.$backgroundImage, perform: { image in
+                    zoomToFit(image, in: geometry.size)
+                })
                 .onDrop(of: ["public.image","public.text"], isTargeted: nil, perform: { providers, location in
                     var fixedLocation = geometry.convert(location, from: .global)
                 fixedLocation = CGPoint(x: fixedLocation.x - geometry.size.width/2, y: fixedLocation.y - geometry.size.height/2)
